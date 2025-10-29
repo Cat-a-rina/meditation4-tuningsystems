@@ -9,7 +9,7 @@ function randomSteps () {
   let steps = []
   let tot = 0
   while (tot < 12) {
-    let indiv = (Math.random() < 0.4 || total > 10) ? 1 : 2
+    let indiv = (Math.random() < 0.4 || tot > 10) ? 1 : 2
     // adding steps as long as we haven't hit the limit
     if (tot + indiv <= 12)
       steps.push(indiv)
@@ -24,18 +24,10 @@ function randomSteps () {
   }
   return steps
 }
-function randomPlace () {
-  for (let i=0; i < 7; i++) {
-    let circleButton = nn.create('div')
-      .text('🔵')
-      .style('font-size', '40px')    
-    const x = Math.random() * nn.width()
-    const y = Math.random() * nn.height()
-    circleButton.move(x,y)    
-  }  
-  
-}  
+
 function playNote (root, mode) {
+  
+  
   const scale = [root]
   let note = root.slice(0, -1)
   let octave = parseInt(root.slice(-1))
@@ -43,16 +35,32 @@ function playNote (root, mode) {
     'A', 'B', 'C', 'D'
   ]
   for (const step of mode) {
-    const currNoteIdx = notes.indexof(note)
+    const currNoteIdx = notes.indexOf(note)
     const nextNoteIdx = (currNoteIdx + step) % notes.length
     if (nextNoteIdx < currNoteIdx) octave += 1
     note = notes[nextNoteIdx]
     scale.push(note + octave)
-    return scale
   }
+  const synth = new Tone. Synth.toDestination()
+  const playNote = scale[Math.floor(Math.random() * scale.length)]
+  synth.triggerAttackRelease(playNote, "8n")
+  return scale
   
 }
-circleButton.on('click', playNote)
+let mode = randomSteps()
 
+function randomPlace () {
+  for (let i=0; i < 7; i++) {
+    let circleButton = nn.create('div')
+      .style('font-size', '40px')
+      .text('🔵')
+      .on('click', () => playNote('A4', mode))
+    const x = Math.random() * nn.width()
+    const y = Math.random() * nn.height()
+    circleButton.move(x,y)
+    
+  }
+}
+nn.on('load', () => {randomPlace()})
 
 </script>
